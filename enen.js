@@ -121,7 +121,7 @@ class encn_Cambridge {
         return notes;
     }
 
-    /*async findYoudao(word) {
+    async findYoudao(word) {
         if (!word) return [];
 
         let base = 'http://dict.youdao.com/w/';
@@ -136,7 +136,7 @@ class encn_Cambridge {
             return [].concat(youdao, ydtrans);
         } catch (err) {
             return [];
-        }*/
+        }
 
         function getYoudao(doc) {
             let notes = [];
