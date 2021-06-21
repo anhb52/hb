@@ -189,7 +189,7 @@ class encn_Cambridge {
              notes;
         }
 
-        /*function getYDTrans(doc) {
+        function getYDTrans(doc) {
             let notes = [];
 
             //get Youdao EC data: check data availability
