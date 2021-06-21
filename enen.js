@@ -1,5 +1,5 @@
 /* global api */
-class encn_Cambridge {
+class enen_Cambridge {
     constructor(options) {
         this.options = options;
         this.maxexample = 2;
@@ -7,9 +7,7 @@ class encn_Cambridge {
     }
 
     async displayName() {
-        let locale = await api.locale();
- 
-        return 'Cambridge EN->EN Dictionary';
+           return 'Cambridge EN->EN Dictionary';
     }
 
     setOptions(options) {
