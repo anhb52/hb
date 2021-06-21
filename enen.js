@@ -85,11 +85,11 @@ class encn_Cambridge {
                     // make definition segement
                     for (const defblock of defblocks) {
                         let eng_tran = T(defblock.querySelector('.ddef_h .def'));
-                        let chn_tran = T(defblock.querySelector('.def-body .trans'));
+                        /*let chn_tran = T(defblock.querySelector('.def-body .trans'));*/
                         if (!eng_tran) continue;
                         let definition = '';
                         eng_tran = `<span class='eng_tran'>${eng_tran.replace(RegExp(expression, 'gi'),`<b>${expression}</b>`)}</span>`;
-                         //chn_tran = `<span class='chn_tran'>${chn_tran}</span>`;
+                        /*chn_tran = `<span class='chn_tran'>${chn_tran}</span>`;*/
                         let tran = `<span class='tran'>${eng_tran}}</span>`;
                         definition += phrasehead ? `${phrasehead}${tran}` : `${pos}${tran}`;
 
@@ -120,120 +120,3 @@ class encn_Cambridge {
         }
         return notes;
     }
-
-    async findYoudao(word) {
-        if (!word) return [];
-
-        let base = 'http://dict.youdao.com/w/';
-        let url = base + encodeURIComponent(word);
-        let doc = '';
-        try {
-            let data = await api.fetch(url);
-            let parser = new DOMParser();
-            doc = parser.parseFromString(data, 'text/html');
-            let youdao = getYoudao(doc); //Combine Youdao Concise English-Chinese Dictionary to the end.
-            let ydtrans = getYDTrans(doc); //Combine Youdao Translation (if any) to the end.
-            return [].concat(youdao, ydtrans);
-        } catch (err) {
-            return [];
-        }
-
-        function getYoudao(doc) {
-            let notes = [];
-
-            //get Youdao EC data: check data availability
-            let defNodes = doc.querySelectorAll('#phrsListTab .trans-container ul li');
-            if (!defNodes || !defNodes.length) return notes;
-
-            //get headword and phonetic
-            let expression = T(doc.querySelector('#phrsListTab .wordbook-js .keyword')); //headword
-            let reading = '';
-            let readings = doc.querySelectorAll('#phrsListTab .wordbook-js .pronounce');
-            if (readings) {
-                let reading_uk = T(readings[0]);
-                let reading_us = T(readings[1]);
-                reading = (reading_uk || reading_us) ? `${reading_uk} ${reading_us}` : '';
-            }
-
-            let audios = [];
-            audios[0] = `http://dict.youdao.com/dictvoice?audio=${encodeURIComponent(expression)}&type=1`;
-            audios[1] = `http://dict.youdao.com/dictvoice?audio=${encodeURIComponent(expression)}&type=2`;
-
-            let definition = '<ul class="ec">';
-            for (const defNode of defNodes){
-                let pos = '';
-                let def = T(defNode);
-                let match = /(^.+?\.)\s/gi.exec(def);
-                if (match && match.length > 1){
-                    pos = match[1];
-                    def = def.replace(pos, '');
-                }
-                pos = pos ? `<span class="pos simple">${pos}</span>`:'';
-                definition += `<li class="ec">${pos}<span class="ec_chn">${def}</span></li>`;
-            }
-            definition += '</ul>';
-           /* let css = `
-                <style>
-                    span.pos  {text-transform:lowercase; font-size:0.9em; margin-right:5px; padding:2px 4px; color:white; background-color:#0d47a1; border-radius:3px;}
-                    span.simple {background-color: #999!important}
-                    ul.ec, li.ec {margin:0; padding:0;}
-                </style>`;
-            notes.push({
-                css,
-                expression,
-                reading,
-                definitions: [definition],
-                audios
-            });
-            */
-             notes;
-        }
-
-        function getYDTrans(doc) {
-            let notes = [];
-
-            //get Youdao EC data: check data availability
-            let transNode = doc.querySelectorAll('#ydTrans .trans-container p')[1];
-            if (!transNode) return notes;
-
-            let definition = `${T(transNode)}`;
-            /*let css = `
-                <style>
-                    .odh-expression {
-                        font-size: 1em!important;
-                        font-weight: normal!important;
-                    }
-                </style>`;
-            notes.push({
-                css,
-                definitions: [definition],
-            });
-            return notes;
-        }
-
-        function T(node) {
-            if (!node)
-                return '';
-            else
-                return node.innerText.trim();
-        }
-        */
-    }
-
-    renderCSS() {
-        let css = `
-            <style>
-                div.phrasehead{margin: 2px 0;font-weight: bold;}
-                span.star {color: #FFBB00;}
-                span.pos  {text-transform:lowercase; font-size:0.9em; margin-right:5px; padding:2px 4px; color:white; background-color:#0d47a1; border-radius:3px;}
-                span.tran {margin:0; padding:0;}
-                span.eng_tran {margin-right:3px; padding:0;}
-                /*span.chn_tran {color:#0d47a1;}*/
-                ul.sents {font-size:0.8em; list-style:square inside; margin:3px 0;padding:5px;background:rgba(13,71,161,0.1); border-radius:5px;}
-                li.sent  {margin:0; padding:0;}
-                span.eng_sent {margin-right:5px;}
-                /*span.chn_sent {color:#0d47a1;}*/
-            </style>`;
-        return css;
-    }
-}
