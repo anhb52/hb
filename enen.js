@@ -1,5 +1,5 @@
 /* global api */
-class enen_Cambridge {
+class encn_Cambridge {
     constructor(options) {
         this.options = options;
         this.maxexample = 2;
@@ -7,7 +7,7 @@ class enen_Cambridge {
     }
 
     async displayName() {
-           return 'Cambridge EN->EN Dictionary';
+         return 'Cambridge EN->EN Dictionary';
     }
 
     setOptions(options) {
